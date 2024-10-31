@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   Box,
   Grid,
@@ -24,35 +24,65 @@ import PeopleIcon from '@mui/icons-material/People';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
 import UserContext from '../hooks/userContext';
+import axios from 'axios';
+import BaseURL from '../config/app.config';
+
+// Function to generate data for the last 6 months, including the current month
+function getVisitorsData() {
+  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const visitorsData = [];
+
+  // Get current date
+  const currentDate = new Date();
+
+  // Loop through the last 6 months
+  for (let i = 5; i >= 0; i--) {
+    const date = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
+    visitorsData.push({
+      name: monthNames[date.getMonth()],
+      visitors: 0, // Default value, update with actual data if available
+    });
+  }
+
+  return visitorsData;
+}
 
 // Sample data for charts
-const visitorsData = [
-  { name: 'Jan', visitors: 4000 },
-  { name: 'Feb', visitors: 3000 },
-  { name: 'Mar', visitors: 2000 },
-  { name: 'Apr', visitors: 2780 },
-  { name: 'May', visitors: 1890 },
-  { name: 'Jun', visitors: 2390 },
-];
-
-const pieData = [
-  { name: 'Desktop', value: 400 },
-  { name: 'Mobile', value: 300 },
-  { name: 'Tablet', value: 200 },
-];
+const visitorsData = getVisitorsData();
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28'];
 
 const Home = () => {
   const { user } = useContext(UserContext)
+  const [data, setData] = useState({})
+
+  const fetchVisitors = async() => {
+    await axios.get(`${BaseURL}/visitors`).then((res) => {
+      console.log(res.data)
+      setData(res.data)
+    })
+  }
+
+  useEffect(() => {
+    fetchVisitors()
+  },[])
+
+  // Transform device counts for pie chart
+  const pieData = [
+    { name: 'Desktop', value: data?.device_counts?.desktop },
+    { name: 'Mobile', value: data?.device_counts?.mobile },
+    { name: 'Tablet', value: data?.device_counts?.tablet }
+
+  ];
+
   return (
     <Box sx={{ flexGrow: 1, p: 3 }}>
       {/* Welcome Section */}
       <Typography variant="h4" gutterBottom>
-        Welcome back, {user.name}!
+        Bon retour, {user.name} !
       </Typography>
       <Typography variant="subtitle1" color="text.secondary" gutterBottom>
-        Here's what's happening with your website today.
+        Voici ce qui se passe avec votre site Web aujourd'hui.
       </Typography>
 
       {/* Stats Cards */}
@@ -63,17 +93,14 @@ const Home = () => {
               <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Box>
                   <Typography color="text.secondary" gutterBottom>
-                    Total Visitors
+                    Nombre total de visiteurs
                   </Typography>
-                  <Typography variant="h4">2,573</Typography>
+                  <Typography variant="h4">{data.total_count}</Typography>
                 </Box>
                 <IconButton color="primary">
                   <PeopleIcon />
                 </IconButton>
               </Box>
-              <Typography variant="body2" sx={{ color: 'success.main' }}>
-                +15% from last week
-              </Typography>
             </CardContent>
           </Card>
         </Grid>
@@ -84,17 +111,14 @@ const Home = () => {
               <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Box>
                   <Typography color="text.secondary" gutterBottom>
-                    Page Views
+                    Nombre total d'utilisateurs
                   </Typography>
-                  <Typography variant="h4">10,234</Typography>
+                  <Typography variant="h4">{data.user_count}</Typography>
                 </Box>
                 <IconButton color="secondary">
                   <ShowChartIcon />
                 </IconButton>
               </Box>
-              <Typography variant="body2" sx={{ color: 'success.main' }}>
-                +25% from last week
-              </Typography>
             </CardContent>
           </Card>
         </Grid>
@@ -105,17 +129,14 @@ const Home = () => {
               <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Box>
                   <Typography color="text.secondary" gutterBottom>
-                    Conversion Rate
+                    Messages non lus
                   </Typography>
-                  <Typography variant="h4">3.27%</Typography>
+                  <Typography variant="h4">{data.unread_count}</Typography>
                 </Box>
                 <IconButton color="success">
                   <TrendingUpIcon />
                 </IconButton>
               </Box>
-              <Typography variant="body2" sx={{ color: 'success.main' }}>
-                +5% from last week
-              </Typography>
             </CardContent>
           </Card>
         </Grid>
@@ -132,7 +153,7 @@ const Home = () => {
             <LineChart
               width={700}
               height={300}
-              data={visitorsData}
+              data={data?.visitor_trends?.original?.length ? data.visitor_trends.original : visitorsData}
               margin={{
                 top: 5,
                 right: 30,
@@ -154,12 +175,11 @@ const Home = () => {
             </LineChart>
           </Paper>
         </Grid>
-
         {/* Pie Chart */}
         <Grid item xs={12} md={4}>
           <Paper sx={{ p: 2 }}>
             <Typography variant="h6" gutterBottom>
-              Device Distribution
+              Distribution des appareils
             </Typography>
             <PieChart width={400} height={300}>
               <Pie

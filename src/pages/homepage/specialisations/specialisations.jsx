@@ -11,46 +11,46 @@ import {
   IconButton,
   Typography,
   Box,
-  Avatar,
 } from '@mui/material';
 import Edit from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 import { useNavigate, Link, Navigate } from 'react-router-dom';
-import UserContext from '../../../hooks/userContext';
+import UserContext from '../../../hooks/userContext'; // Adjust the path based on your project structure
 import BaseURL from '../../../config/app.config';
 
-const Videos = () => {
-  const [images, setImages] = useState([]);
+const Specializations = () => {
+  const [specializations, setSpecializations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
 
   const navigate = useNavigate();
   const { user, isAuthenticated, isLoading } = useContext(UserContext);
 
-  const fetchImages = async () => {
+  // Function to fetch specializations from the backend
+  const fetchSpecializations = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${BaseURL}/videos`, {
+      const response = await axios.get(`${BaseURL}/specializations`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
       });
-      setImages(response.data);
+      setSpecializations(response.data.data); // Adjust based on your API response structure
     } catch (error) {
-      console.error('Error fetching images:', error);
+      console.error('Error fetching specializations:', error);
       if (error.response?.status === 401) {
-        setSnackbar({ 
-          open: true, 
-          message: 'Your session has expired. Please login again.', 
-          severity: 'error' 
+        setSnackbar({
+          open: true,
+          message: 'Your session has expired. Please login again.',
+          severity: 'error',
         });
         navigate('/login');
       } else {
-        setSnackbar({ 
-          open: true, 
-          message: 'Failed to fetch images.', 
-          severity: 'error' 
+        setSnackbar({
+          open: true,
+          message: 'Failed to fetch specializations.',
+          severity: 'error',
         });
       }
     } finally {
@@ -58,12 +58,14 @@ const Videos = () => {
     }
   };
 
+  // Fetch specializations when the component mounts or when authentication status changes
   useEffect(() => {
     if (isAuthenticated) {
-      fetchImages();
+      fetchSpecializations();
     }
   }, [isAuthenticated]);
 
+  // Show a loading spinner while authentication status is being determined
   if (isLoading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
@@ -72,66 +74,54 @@ const Videos = () => {
     );
   }
 
+  // Redirect to login if the user is not authenticated
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 
+  // Function to close the Snackbar
   const handleCloseSnackbar = () => {
     setSnackbar({ ...snackbar, open: false });
   };
 
+  // Function to navigate to the update specialization page
   const handleUpdate = (id) => {
-    navigate(`/videos/update/${id}`);
+    navigate(`/specializations/update/${id}`);
   };
 
+  // Function to handle deletion of a specialization
   const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this image?')) {
+    if (window.confirm('Are you sure you want to delete this specialization?')) {
       try {
-        await axios.delete(`${BaseURL}/videos/${id}`, {
+        await axios.delete(`${BaseURL}/specializations/${id}`, {
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
         });
-        setSnackbar({ open: true, message: 'Image deleted successfully.', severity: 'success' });
-        fetchImages();
+        setSnackbar({ open: true, message: 'Specialization deleted successfully.', severity: 'success' });
+        fetchSpecializations();
       } catch (error) {
-        console.error('Error deleting image:', error);
+        console.error('Error deleting specialization:', error);
         if (error.response?.status === 401) {
-          setSnackbar({ 
-            open: true, 
-            message: 'Your session has expired. Please login again.', 
-            severity: 'error' 
+          setSnackbar({
+            open: true,
+            message: 'Your session has expired. Please login again.',
+            severity: 'error',
           });
           navigate('/login');
         } else {
-          const errorMessage = error.response?.data?.message || 'Failed to delete image.';
+          const errorMessage = error.response?.data?.message || 'Failed to delete specialization.';
           setSnackbar({ open: true, message: errorMessage, severity: 'error' });
         }
       }
     }
   };
 
+  // Define columns for the DataGrid
   const columns = [
     { field: 'id', headerName: 'ID', flex: 0.5 },
-    { field: 'title', headerName: 'Title', flex: 1 },
-    { 
-      field: 'video_url', 
-      headerName: 'Video', 
-      flex: 1,
-      renderCell: (params) => (
-        <Avatar
-          src={`${BaseURL}/storage/` + params.value}
-          variant="square"
-          sx={{ width: 100, height: 60, objectFit: 'cover' }}
-        />
-      ),
-    },
-    {
-        field: 'description',
-        headerName:'Description',
-        flex:1
-    }
-    ,
+    { field: 'name', headerName: 'Name', flex: 1 },
+    { field: 'description', headerName: 'Description', flex: 2 },
     {
       field: 'actions',
       headerName: 'Actions',
@@ -163,28 +153,39 @@ const Videos = () => {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Box sx={{display:'flex', justifyContent:'space-between',width:'100%'}}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
         <Typography variant="h4" gutterBottom>
-            Video Management
+          Specialization Management
         </Typography>
 
+        {/* Disable the Create button if there are already three specializations */}
         <Button
-            variant="contained"
-            color="primary"
-            component={Link}
-            to="/videos/create"
-            sx={{ mb: 2 }}
+          variant="contained"
+          color="primary"
+          component={Link}
+          to="/specializations/create"
+          sx={{ mb: 2 }}
+          disabled={specializations.length >= 3}
         >
-            Upload Image
+          Create Specialization
         </Button>
       </Box>
 
+      {/* Optional: Display a message when the maximum number of specializations is reached */}
+      {specializations.length >= 3 && (
+        <Typography variant="body1" color="error" sx={{ mb: 2 }}>
+          You have reached the maximum number of specializations (3). Please delete an existing specialization before adding a new one.
+        </Typography>
+      )}
+
       {loading ? (
-        <CircularProgress />
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+          <CircularProgress />
+        </Box>
       ) : (
         <Box sx={{ height: 600, width: '100%' }}>
           <DataGrid
-            rows={images}
+            rows={specializations}
             columns={columns}
             pageSize={10}
             rowsPerPageOptions={[10, 25, 50]}
@@ -196,6 +197,7 @@ const Videos = () => {
         </Box>
       )}
 
+      {/* Snackbar for user feedback */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={6000}
@@ -210,4 +212,4 @@ const Videos = () => {
   );
 };
 
-export default Videos;
+export default Specializations;

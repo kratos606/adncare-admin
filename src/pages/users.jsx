@@ -12,13 +12,12 @@ import {
   Typography,
   Box,
 } from '@mui/material';
-import {
-  Edit,
-  Delete as DeleteIcon,
-} from '@mui/icons-material';
+import Edit from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
-import { useNavigate, Link, Navigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import UserContext from '../hooks/userContext';
+import BaseURL from '../config/app.config';
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -31,7 +30,7 @@ const Users = () => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('http://localhost:8000/users', {
+      const response = await axios.get(`${BaseURL}/users`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -72,10 +71,6 @@ const Users = () => {
     );
   }
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
-
   const handleCloseSnackbar = () => {
     setSnackbar({ ...snackbar, open: false });
   };
@@ -87,7 +82,7 @@ const Users = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
       try {
-        await axios.delete(`http://localhost:8000/users/${id}`, {
+        await axios.delete(`${BaseURL}/users/${id}`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }

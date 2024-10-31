@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import UserContext from '../hooks/userContext';
 import { Navigate, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import BaseURL from '../config/app.config';
 
 function Login() {
     const [inputs, setInputs] = useState({});
@@ -12,7 +13,7 @@ function Login() {
     const login = async (e) => {
         e.preventDefault();
         try {
-            let res = await axios.post('http://127.0.0.1:8000/login', {
+            let res = await axios.post(`${BaseURL}/login`, {
                 email: inputs.email,
                 password: inputs.password
             });

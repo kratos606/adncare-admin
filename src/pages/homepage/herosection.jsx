@@ -1,17 +1,23 @@
 // src/components/HeroSection/UpdateHeroForm.jsx
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import {Box,TextField,Button,Typography,Paper,Grid,IconButton,List,ListItem,ListItemText,ListItemSecondaryAction,Divider,Snackbar,Alert,CircularProgress,Drawer,Toolbar,ListItemIcon,Collapse
 } from '@mui/material';
-import {Delete as DeleteIcon,Add as AddIcon,Facebook as FacebookIcon,Instagram as InstagramIcon,Email as EmailIcon,Phone as PhoneIcon,LocationOn as LocationIcon,DragIndicator as DragIndicatorIcon,Dashboard as DashboardIcon
-} from '@mui/icons-material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import InstagramIcon from '@mui/icons-material/Instagram';
+import EmailIcon from '@mui/icons-material/Email';
+import PhoneIcon from '@mui/icons-material/Phone';
+import LocationIcon from '@mui/icons-material/LocationOn';
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import axios from 'axios';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import BaseURL from '../../config/app.config';
 
 // API Service
 const heroSectionAPI = {
-    get: () => axios.get('http://127.0.0.1:8000/hero-section'),
-    update: (data) => axios.post('http://127.0.0.1:8000/hero-section', data)
+    get: () => axios.get(`${BaseURL}/hero-section`),
+    update: (data) => axios.post(`${BaseURL}/hero-section`, data)
   };
   
   // Custom Hook - useNotification
@@ -130,7 +136,7 @@ const heroSectionAPI = {
                           onClick={() => onDelete(index)}
                           color="error"
                         >
-                          <DeleteIcon />
+                          <DeleteIcon color='secondary' />
                         </IconButton>
                       </ListItemSecondaryAction>
                     </ListItem>
@@ -170,6 +176,9 @@ const heroSectionAPI = {
             error={!!errors.title}
             helperText={errors.title}
             margin="normal"
+            inputProps={{
+              maxLength: 70,
+            }}
             required
           />
           <TextField
@@ -181,6 +190,9 @@ const heroSectionAPI = {
             error={!!errors.subtitle}
             helperText={errors.subtitle}
             margin="normal"
+            inputProps={{
+              maxLength: 35,
+            }}
             required
             multiline
             rows={2}
@@ -201,6 +213,9 @@ const heroSectionAPI = {
             error={!!errors.cta_text}
             helperText={errors.cta_text}
             margin="normal"
+            inputProps={{
+              maxLength:22
+            }}
             required
           />
           <TextField
@@ -212,6 +227,9 @@ const heroSectionAPI = {
             error={!!errors.cta_button_text}
             helperText={errors.cta_button_text}
             margin="normal"
+            inputProps={{
+              maxLength:12
+            }}
             required
           />
           <TextField
@@ -242,7 +260,7 @@ const heroSectionAPI = {
                 onChange={handleChange}
                 margin="normal"
                 InputProps={{
-                  startAdornment: <FacebookIcon sx={{ mr: 1, color: 'action.active' }} />
+                  startAdornment: <FacebookIcon color='primary' sx={{ mr: 1 }} />
                 }}
               />
             </Grid>
@@ -255,7 +273,7 @@ const heroSectionAPI = {
                 onChange={handleChange}
                 margin="normal"
                 InputProps={{
-                  startAdornment: <InstagramIcon sx={{ mr: 1, color: 'action.active' }} />
+                  startAdornment: <InstagramIcon color='primary' sx={{ mr: 1 }} />
                 }}
               />
             </Grid>
@@ -268,7 +286,7 @@ const heroSectionAPI = {
                 onChange={handleChange}
                 margin="normal"
                 InputProps={{
-                  startAdornment: <EmailIcon sx={{ mr: 1, color: 'action.active' }} />
+                  startAdornment: <EmailIcon color='primary' sx={{ mr: 1 }} />
                 }}
               />
             </Grid>
@@ -281,7 +299,7 @@ const heroSectionAPI = {
                 onChange={handleChange}
                 margin="normal"
                 InputProps={{
-                  startAdornment: <PhoneIcon sx={{ mr: 1, color: 'action.active' }} />
+                  startAdornment: <PhoneIcon color='primary' sx={{ mr: 1 }} />
                 }}
               />
             </Grid>
@@ -294,7 +312,7 @@ const heroSectionAPI = {
                 onChange={handleChange}
                 margin="normal"
                 InputProps={{
-                  startAdornment: <LocationIcon sx={{ mr: 1, color: 'action.active' }} />
+                  startAdornment: <LocationIcon color='primary' sx={{ mr: 1 }} />
                 }}
               />
             </Grid>
@@ -314,6 +332,9 @@ const heroSectionAPI = {
               onChange={(e) => setNewBenefit(e.target.value)}
               error={!!errors.benefits}
               helperText={errors.benefits || `${formData.benefits.length}/${maxBenefits} benefits added`}
+              inputProps={{
+                maxLength:22
+              }}
               onKeyPress={(e) => {
                 if (e.key === 'Enter') {
                   e.preventDefault();

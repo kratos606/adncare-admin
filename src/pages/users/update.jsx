@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import BaseURL from '../../config/app.config';
 
 const Update = () => {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ const Update = () => {
   // Fetch user data
   const fetchUser = async () => {
     try {
-      const response = await axios.get(`http://localhost:8000/users/${id}`, {
+      const response = await axios.get(`${BaseURL}/users/${id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -73,7 +74,7 @@ const Update = () => {
 
     setUpdating(true);
     try {
-      await axios.put(`http://localhost:8000/users/${id}`, {
+      await axios.put(`${BaseURL}/users/${id}`, {
         name: formData.name,
         email: formData.email,
         password: formData.password

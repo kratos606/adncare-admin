@@ -13,13 +13,12 @@ import {
   Box,
   Avatar,
 } from '@mui/material';
-import {
-  Edit,
-  Delete as DeleteIcon,
-} from '@mui/icons-material';
+import Edit from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 import { useNavigate, Link, Navigate } from 'react-router-dom';
 import UserContext from '../../../hooks/userContext';
+import BaseURL from '../../../config/app.config';
 
 const Images = () => {
   const [images, setImages] = useState([]);
@@ -32,7 +31,7 @@ const Images = () => {
   const fetchImages = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('http://localhost:8000/images', {
+      const response = await axios.get(`${BaseURL}/images`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -88,7 +87,7 @@ const Images = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this image?')) {
       try {
-        await axios.delete(`http://localhost:8000/images/${id}`, {
+        await axios.delete(`${BaseURL}/images/${id}`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
@@ -115,13 +114,14 @@ const Images = () => {
   const columns = [
     { field: 'id', headerName: 'ID', flex: 0.5 },
     { field: 'title', headerName: 'Title', flex: 1 },
+    { field: 'slider', headerName: 'Slider', flex: 1 },
     { 
       field: 'image_path', 
       headerName: 'Image', 
       flex: 1,
       renderCell: (params) => (
         <Avatar
-          src={'http://127.0.0.1:8000/storage/' + params.value}
+          src={`${BaseURL}/storage/` + params.value}
           variant="square"
           sx={{ width: 100, height: 60, objectFit: 'cover' }}
         />

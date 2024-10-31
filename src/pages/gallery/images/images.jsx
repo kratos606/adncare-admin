@@ -20,7 +20,7 @@ import { useNavigate, Link, Navigate } from 'react-router-dom';
 import UserContext from '../../../hooks/userContext';
 import BaseURL from '../../../config/app.config';
 
-const Videos = () => {
+const GalleryImages = () => {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
@@ -31,7 +31,7 @@ const Videos = () => {
   const fetchImages = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${BaseURL}/videos`, {
+      const response = await axios.get(`${BaseURL}/galerie-image`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -81,13 +81,13 @@ const Videos = () => {
   };
 
   const handleUpdate = (id) => {
-    navigate(`/videos/update/${id}`);
+    navigate(`/galerie/images/update/${id}`);
   };
 
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this image?')) {
       try {
-        await axios.delete(`${BaseURL}/videos/${id}`, {
+        await axios.delete(`${BaseURL}/galerie-image/${id}`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
@@ -115,8 +115,8 @@ const Videos = () => {
     { field: 'id', headerName: 'ID', flex: 0.5 },
     { field: 'title', headerName: 'Title', flex: 1 },
     { 
-      field: 'video_url', 
-      headerName: 'Video', 
+      field: 'image_path', 
+      headerName: 'Image', 
       flex: 1,
       renderCell: (params) => (
         <Avatar
@@ -126,12 +126,6 @@ const Videos = () => {
         />
       ),
     },
-    {
-        field: 'description',
-        headerName:'Description',
-        flex:1
-    }
-    ,
     {
       field: 'actions',
       headerName: 'Actions',
@@ -165,14 +159,14 @@ const Videos = () => {
     <Box sx={{ p: 3 }}>
       <Box sx={{display:'flex', justifyContent:'space-between',width:'100%'}}>
         <Typography variant="h4" gutterBottom>
-            Video Management
+            Image Management
         </Typography>
 
         <Button
             variant="contained"
             color="primary"
             component={Link}
-            to="/videos/create"
+            to="/galerie/images/create"
             sx={{ mb: 2 }}
         >
             Upload Image
@@ -210,4 +204,4 @@ const Videos = () => {
   );
 };
 
-export default Videos;
+export default GalleryImages;

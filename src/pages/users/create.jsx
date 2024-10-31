@@ -1,29 +1,18 @@
 // src/pages/Create.jsx
 
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import {
   TextField,
   Button,
   CircularProgress,
   Snackbar,
   Alert,
-  Container,
   Typography,
-  Box,
-  AppBar,
-  Toolbar,
-  Drawer,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Collapse,
+  Box
 } from '@mui/material';
-import { 
-  Dashboard as DashboardIcon,
-} from '@mui/icons-material';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import BaseURL from '../../config/app.config';
 
 // Form validation
 const validateForm = (formData) => {
@@ -143,7 +132,7 @@ const Create = () => {
 
     setLoading(true);
     try {
-      await axios.post('http://localhost:8000/register', formData);
+      await axios.post(`${BaseURL}/register`, formData);
       showNotification('User created successfully!');
       setTimeout(() => navigate('/admin'), 1500);
     } catch (error) {

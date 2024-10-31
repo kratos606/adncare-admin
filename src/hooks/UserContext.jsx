@@ -1,6 +1,7 @@
 // src/UserContext.js
 import axios from "axios";
 import React, { createContext, useEffect, useState } from "react";
+import BaseURL from '../config/app.config';
 
 const UserContext = createContext();
 
@@ -20,7 +21,7 @@ function UserContextProvider({ children }) {
     }
 
     try {
-      const res = await axios.get("http://127.0.0.1:8000/user", {
+      const res = await axios.get(`${BaseURL}/user`, {
         headers: { "Authorization": `Bearer ${token}` }
       });
       console.log(token);
@@ -43,7 +44,7 @@ function UserContextProvider({ children }) {
 
   const login = async (credentials) => {
     try {
-      const response = await axios.post('http://127.0.0.1:8000/login', credentials);
+      const response = await axios.post(`${BaseURL}/login`, credentials);
       const { token, user: userData } = response.data;
       
       localStorage.setItem('token', token);

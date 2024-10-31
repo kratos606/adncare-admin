@@ -20,7 +20,7 @@ import { useNavigate, Link, Navigate } from 'react-router-dom';
 import UserContext from '../../../hooks/userContext';
 import BaseURL from '../../../config/app.config';
 
-const Videos = () => {
+const GalleryVideos = () => {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
@@ -31,7 +31,7 @@ const Videos = () => {
   const fetchImages = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${BaseURL}/videos`, {
+      const response = await axios.get(`${BaseURL}/galerie-video`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -81,13 +81,13 @@ const Videos = () => {
   };
 
   const handleUpdate = (id) => {
-    navigate(`/videos/update/${id}`);
+    navigate(`/galerie/videos/update/${id}`);
   };
 
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this image?')) {
       try {
-        await axios.delete(`${BaseURL}/videos/${id}`, {
+        await axios.delete(`${BaseURL}/galerie-video/${id}`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
@@ -114,6 +114,7 @@ const Videos = () => {
   const columns = [
     { field: 'id', headerName: 'ID', flex: 0.5 },
     { field: 'title', headerName: 'Title', flex: 1 },
+    { field: 'description', headerName: 'Description', flex: 1 },
     { 
       field: 'video_url', 
       headerName: 'Video', 
@@ -125,11 +126,6 @@ const Videos = () => {
           sx={{ width: 100, height: 60, objectFit: 'cover' }}
         />
       ),
-    },
-    {
-        field: 'description',
-        headerName:'Description',
-        flex:1
     }
     ,
     {
@@ -172,7 +168,7 @@ const Videos = () => {
             variant="contained"
             color="primary"
             component={Link}
-            to="/videos/create"
+            to="/galerie/videos/create"
             sx={{ mb: 2 }}
         >
             Upload Image
@@ -210,4 +206,4 @@ const Videos = () => {
   );
 };
 
-export default Videos;
+export default GalleryVideos;

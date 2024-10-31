@@ -13,8 +13,10 @@ import {
   Alert,
   Box,
 } from '@mui/material';
-import { AddCircle, RemoveCircle } from '@mui/icons-material';
+import AddCircle from '@mui/icons-material/AddCircle';
+import RemoveCircle from '@mui/icons-material/RemoveCircle';
 import axios from 'axios';
+import BaseURL from '../../config/app.config';
 
 const WelcomeForm = () => {
   const [formData, setFormData] = useState({
@@ -42,7 +44,7 @@ const WelcomeForm = () => {
   useEffect(() => {
     // Fetch existing welcome section data
     axios
-      .get('http://127.0.0.1:8000/welcome-section') // Adjust the endpoint as needed
+      .get(`${BaseURL}/welcome-section`) // Adjust the endpoint as needed
       .then((response) => {
         if (response.data.status === 'success') {
           const data = response.data.data;
@@ -77,14 +79,41 @@ const WelcomeForm = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleArrayChange = (index, value, field) => {
-    const updatedArray = [...formData[field]];
-    updatedArray[index] = value;
-    setFormData({ ...formData, [field]: updatedArray });
-  };
+  const handleArrayChange = (index, value, field, arrayName) => {
+    if (arrayName === 'counter' && field === 'count') {
+      // Restrict count to a maximum of 99999
+      const validatedValue = Math.min(Number(value), 99999);
+      const updatedCounter = [...formData.counter];
+      updatedCounter[index] = {
+        ...updatedCounter[index],
+        [field]: validatedValue
+      };
+      setFormData({ ...formData, counter: updatedCounter });
+    } else if (arrayName === 'counter') {
+      // Handle other fields in counter array
+      const updatedCounter = [...formData.counter];
+      updatedCounter[index] = {
+        ...updatedCounter[index],
+        [field]: value
+      };
+      setFormData({ ...formData, counter: updatedCounter });
+    } else {
+      // Handle other arrays (like bullets)
+      const updatedArray = [...formData[arrayName || field]];
+      updatedArray[index] = value;
+      setFormData({ ...formData, [arrayName || field]: updatedArray });
+    }
+  };  
 
   const addField = (field) => {
-    setFormData({ ...formData, [field]: [...formData[field], ''] });
+    if (field === 'counter') {
+      setFormData({
+        ...formData,
+        counter: [...formData.counter, { count: '', label: '' }]
+      });
+    } else {
+      setFormData({ ...formData, [field]: [...formData[field], ''] });
+    }
   };
 
   const removeField = (index, field) => {
@@ -106,8 +135,10 @@ const WelcomeForm = () => {
       counter: formData.counter,
     };
 
+    console.log(submissionData)
+
     axios
-      .post('http://127.0.0.1:8000/welcome-section', submissionData) // Adjust the endpoint and method as needed
+      .post(`${BaseURL}/welcome-section`, submissionData) // Adjust the endpoint and method as needed
       .then((response) => {
         if (response.data.status === 'success') {
           setSnackbar({
@@ -174,6 +205,9 @@ const WelcomeForm = () => {
               fullWidth
               required
               error={!!errors.welcome_title}
+              inputProps={{
+                maxLength:24
+              }}
               helperText={
                 errors.welcome_title ? errors.welcome_title[0] : ''
               }
@@ -191,6 +225,9 @@ const WelcomeForm = () => {
               multiline
               rows={4}
               required
+              inputProps={{
+                maxLength:250
+              }}
               error={!!errors.welcome_description}
               helperText={
                 errors.welcome_description
@@ -210,6 +247,9 @@ const WelcomeForm = () => {
               fullWidth
               required
               error={!!errors.welcome_stitle}
+              inputProps={{
+                maxLength:24
+              }}
               helperText={
                 errors.welcome_stitle ? errors.welcome_stitle[0] : ''
               }
@@ -226,6 +266,9 @@ const WelcomeForm = () => {
               fullWidth
               multiline
               rows={4}
+              inputProps={{
+                maxLength:250
+              }}
               required
               error={!!errors.welcome_sdescription}
               helperText={
@@ -245,6 +288,9 @@ const WelcomeForm = () => {
               onChange={handleChange}
               fullWidth
               required
+              inputProps={{
+                maxLength:24
+              }}
               error={!!errors.cta_title}
               helperText={errors.cta_title ? errors.cta_title[0] : ''}
             />
@@ -260,6 +306,9 @@ const WelcomeForm = () => {
               fullWidth
               multiline
               rows={4}
+              inputProps={{
+                maxLength:250
+              }}
               required
               error={!!errors.cta_description}
               helperText={
@@ -285,6 +334,9 @@ const WelcomeForm = () => {
                       onChange={(e) =>
                         handleArrayChange(index, e.target.value, 'bullets')
                       }
+                      inputProps={{
+                        maxLength:24
+                      }}
                       fullWidth
                       required
                       error={
@@ -336,6 +388,9 @@ const WelcomeForm = () => {
               onChange={handleChange}
               fullWidth
               required
+              inputProps={{
+                maxLength:24
+              }}
               error={!!errors.cta_button}
               helperText={errors.cta_button ? errors.cta_button[0] : ''}
             />
@@ -351,25 +406,52 @@ const WelcomeForm = () => {
                 variant="outlined"
               >
                 <Grid container alignItems="center" spacing={1}>
-                  <Grid item xs={11}>
+                  <Grid item xs={5}>
                     <TextField
-                      label={`Counter ${index + 1}`}
-                      value={cnt}
+                      label={`Count ${index + 1}`}
+                      value={cnt?.count}
                       onChange={(e) =>
-                        handleArrayChange(index, e.target.value, 'counter')
+                        handleArrayChange(index, e.target.value, 'count', 'counter')
                       }
                       fullWidth
                       required
+                      type='number'
                       error={
                         errors.counter &&
                         Array.isArray(errors.counter) &&
-                        !!errors.counter[index]
+                        !!errors.counter[index]?.count
                       }
                       helperText={
                         errors.counter &&
                         Array.isArray(errors.counter) &&
-                        errors.counter[index]
-                          ? errors.counter[index]
+                        errors.counter[index]?.count
+                          ? errors.counter[index].count
+                          : ''
+                      }
+                    />
+                  </Grid>
+                  <Grid item xs={5}>
+                    <TextField
+                      label={`Label ${index + 1}`}
+                      value={cnt?.label}
+                      onChange={(e) =>
+                        handleArrayChange(index, e.target.value, 'label', 'counter')
+                      }
+                      fullWidth
+                      required
+                      inputProps={{
+                        maxLength:24
+                      }}
+                      error={
+                        errors.counter &&
+                        Array.isArray(errors.counter) &&
+                        !!errors.counter[index]?.label
+                      }
+                      helperText={
+                        errors.counter &&
+                        Array.isArray(errors.counter) &&
+                        errors.counter[index]?.label
+                          ? errors.counter[index].label
                           : ''
                       }
                     />
@@ -400,6 +482,7 @@ const WelcomeForm = () => {
             )}
           </Grid>
 
+
           {/* Submit Button */}
           <Grid item xs={12}>
             <Button
@@ -419,14 +502,12 @@ const WelcomeForm = () => {
         open={snackbar.open}
         autoHideDuration={6000}
         onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       >
         <Alert
           onClose={handleSnackbarClose}
           severity={snackbar.severity}
           sx={{ width: '100%' }}
-          elevation={6}
-          variant="filled"
         >
           {snackbar.message}
         </Alert>
