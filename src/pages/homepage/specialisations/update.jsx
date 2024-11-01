@@ -201,9 +201,6 @@ const UpdateSpecialization = () => {
           label="Name"
           variant="outlined"
           value={name}
-          inputProps={{
-            maxLength:30
-          }}
           onChange={(e) => setName(e.target.value)}
           required
           fullWidth
@@ -214,9 +211,6 @@ const UpdateSpecialization = () => {
           label="Description"
           variant="outlined"
           value={description}
-          inputProps={{
-            maxLength:234
-          }}
           onChange={(e) => setDescription(e.target.value)}
           multiline
           rows={4}

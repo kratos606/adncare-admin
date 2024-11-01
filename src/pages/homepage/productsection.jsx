@@ -97,9 +97,6 @@ const ProductForm = () => {
             label="Title"
             name="title"
             value={product.title}
-            inputProps={{
-              maxLength:50
-            }}
             onChange={handleInputChange}
             margin="normal"
             required
@@ -111,9 +108,6 @@ const ProductForm = () => {
             value={product.description}
             onChange={handleInputChange}
             margin="normal"
-            inputProps={{
-              maxLength:250
-            }}
             multiline
             rows={4}
             required
@@ -122,9 +116,6 @@ const ProductForm = () => {
             fullWidth
             label="CTA Button"
             name="cta_button"
-            inputProps={{
-              maxLength:16
-            }}
             value={product.cta_button}
             onChange={handleInputChange}
             margin="normal"
@@ -138,9 +129,6 @@ const ProductForm = () => {
                   fullWidth
                   value={bullet}
                   onChange={(e) => handleBulletsChange(index, e.target.value)}
-                  inputProps={{
-                    maxLength:16
-                  }}
                   required
                 />
                 <IconButton onClick={() => handleRemoveBullet(index)} color="secondary">

@@ -146,9 +146,6 @@ const CreateSpecialization = () => {
           label="Name"
           variant="outlined"
           value={name}
-          inputProps={{
-            maxLength:30
-          }}
           onChange={(e) => setName(e.target.value)}
           required
           fullWidth
@@ -158,9 +155,6 @@ const CreateSpecialization = () => {
         <TextField
           label="Description"
           variant="outlined"
-          inputProps={{
-            maxLength:234
-          }}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           multiline

@@ -205,9 +205,6 @@ const WelcomeForm = () => {
               fullWidth
               required
               error={!!errors.welcome_title}
-              inputProps={{
-                maxLength:24
-              }}
               helperText={
                 errors.welcome_title ? errors.welcome_title[0] : ''
               }
@@ -225,9 +222,6 @@ const WelcomeForm = () => {
               multiline
               rows={4}
               required
-              inputProps={{
-                maxLength:250
-              }}
               error={!!errors.welcome_description}
               helperText={
                 errors.welcome_description
@@ -247,9 +241,6 @@ const WelcomeForm = () => {
               fullWidth
               required
               error={!!errors.welcome_stitle}
-              inputProps={{
-                maxLength:24
-              }}
               helperText={
                 errors.welcome_stitle ? errors.welcome_stitle[0] : ''
               }
@@ -266,9 +257,6 @@ const WelcomeForm = () => {
               fullWidth
               multiline
               rows={4}
-              inputProps={{
-                maxLength:250
-              }}
               required
               error={!!errors.welcome_sdescription}
               helperText={
@@ -288,9 +276,6 @@ const WelcomeForm = () => {
               onChange={handleChange}
               fullWidth
               required
-              inputProps={{
-                maxLength:24
-              }}
               error={!!errors.cta_title}
               helperText={errors.cta_title ? errors.cta_title[0] : ''}
             />
@@ -306,9 +291,6 @@ const WelcomeForm = () => {
               fullWidth
               multiline
               rows={4}
-              inputProps={{
-                maxLength:250
-              }}
               required
               error={!!errors.cta_description}
               helperText={
@@ -334,9 +316,6 @@ const WelcomeForm = () => {
                       onChange={(e) =>
                         handleArrayChange(index, e.target.value, 'bullets')
                       }
-                      inputProps={{
-                        maxLength:24
-                      }}
                       fullWidth
                       required
                       error={
@@ -388,9 +367,6 @@ const WelcomeForm = () => {
               onChange={handleChange}
               fullWidth
               required
-              inputProps={{
-                maxLength:24
-              }}
               error={!!errors.cta_button}
               helperText={errors.cta_button ? errors.cta_button[0] : ''}
             />
@@ -439,9 +415,6 @@ const WelcomeForm = () => {
                       }
                       fullWidth
                       required
-                      inputProps={{
-                        maxLength:24
-                      }}
                       error={
                         errors.counter &&
                         Array.isArray(errors.counter) &&

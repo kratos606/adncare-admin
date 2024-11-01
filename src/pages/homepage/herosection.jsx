@@ -176,9 +176,6 @@ const heroSectionAPI = {
             error={!!errors.title}
             helperText={errors.title}
             margin="normal"
-            inputProps={{
-              maxLength: 70,
-            }}
             required
           />
           <TextField
@@ -190,9 +187,6 @@ const heroSectionAPI = {
             error={!!errors.subtitle}
             helperText={errors.subtitle}
             margin="normal"
-            inputProps={{
-              maxLength: 35,
-            }}
             required
             multiline
             rows={2}
@@ -213,9 +207,6 @@ const heroSectionAPI = {
             error={!!errors.cta_text}
             helperText={errors.cta_text}
             margin="normal"
-            inputProps={{
-              maxLength:22
-            }}
             required
           />
           <TextField
@@ -227,9 +218,6 @@ const heroSectionAPI = {
             error={!!errors.cta_button_text}
             helperText={errors.cta_button_text}
             margin="normal"
-            inputProps={{
-              maxLength:12
-            }}
             required
           />
           <TextField
@@ -332,9 +320,6 @@ const heroSectionAPI = {
               onChange={(e) => setNewBenefit(e.target.value)}
               error={!!errors.benefits}
               helperText={errors.benefits || `${formData.benefits.length}/${maxBenefits} benefits added`}
-              inputProps={{
-                maxLength:22
-              }}
               onKeyPress={(e) => {
                 if (e.key === 'Enter') {
                   e.preventDefault();
